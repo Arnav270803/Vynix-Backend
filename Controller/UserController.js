@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const {  email, password } = req.body;
 
-    if (!name || !email || !password) {
+    if ( !email || !password) {
       return res.json({ success: false, message: "Missing Details" });
     }
 
@@ -14,7 +14,6 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const userData = {
-      name,
       email,
       password: hashedPassword
     };
@@ -24,7 +23,7 @@ const registerUser = async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET); 
 
-    res.json({ success: true, token, user: { name: user.name } });
+    res.json({ success: true, token, user: { name: user.email } });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
@@ -44,7 +43,7 @@ const loginUser = async (req, res) => {
 
     if (isMatch) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET); 
-      res.json({ success: true, token, user: { name: user.name } });
+      res.json({ success: true, token, user: { name: user.email } });
     } else {
       return res.json({ success: false, message: 'Invalid credentials' }); 
     }
