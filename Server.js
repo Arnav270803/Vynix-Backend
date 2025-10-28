@@ -1,25 +1,23 @@
-import express from 'express'
-import cors from 'cors'
-import 'dotenv/config'
-import userRouter from './routes/userRoutes.js';
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import 'dotenv/config';
 import connectDB from './config/mongodb.js';
-import aiRoute from './routes/aiRoute.js'
+import userRouter from './routes/userRoutes.js';
+import aiRoute from './routes/aiRoute.js';
 
-const app=express();
+const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 app.use(cors());
-await connectDB()// connecting the mongodb database
+app.use('/videos', express.static(path.join(process.cwd(), 'videos')));
 
-app.use('/api/user' , userRouter)
-app.use('/api/ai' , aiRoute); //New Ai Router
+await connectDB();
 
-app.get('/' ,(req,res) => {
-    res.send("API Working ") // this will sends a request that API is working 
-})
+app.use('/api/user', userRouter);
+app.use('/api/ai', aiRoute);
 
+app.get('/', (req, res) => res.send('API Working'));
 
-app.listen(PORT , ()=>
-console.log(`Server is running on port ${PORT}`)
-)
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
