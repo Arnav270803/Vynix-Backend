@@ -1,0 +1,1 @@
+- Create an account to cloudinary and start upoding your video there and then directly get the video from there for frontend , it will be simple and easy to do probabily . 
