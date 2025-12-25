@@ -122,7 +122,7 @@ const manimCmd = `manim -qm --format mp4 --output_file "${videoPath}" "${pyFileP
 
 
 {/* creating the video url and storing all the metadata to the database  */}
-      const videoUrl = `${req.protocol}://${req.get('host')}/videos/${videoFile}`; // using the request protocol eg. http and hosting 
+      const videoUrl = `/video/${uniqueId}`;// using the request protocol eg. http and hosting 
       await animationModel.create({ userId, prompt, videoUrl, manimCode });
 
 
