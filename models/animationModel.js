@@ -1,8 +1,31 @@
+// import mongoose from 'mongoose';
+
+// const animationSchema = new mongoose.Schema(
+//   {
+//     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+//     prompt: { type: String, required: true },
+//     videoUrl: { type: String, required: true },
+//     manimCode: { type: String },
+//   },
+//   { timestamps: true }
+// );
+
+// const animationModel = mongoose.models.animation || mongoose.model('animation', animationSchema);
+// export default animationModel;
+
+
+
+
 import mongoose from 'mongoose';
 
 const animationSchema = new mongoose.Schema(
   {
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+    userId: {
+      type: String,          // ← Capital S! This fixes it
+      ref: 'user',
+      required: false,
+      default: 'guest'
+    },
     prompt: { type: String, required: true },
     videoUrl: { type: String, required: true },
     manimCode: { type: String },
@@ -11,4 +34,5 @@ const animationSchema = new mongoose.Schema(
 );
 
 const animationModel = mongoose.models.animation || mongoose.model('animation', animationSchema);
+
 export default animationModel;
