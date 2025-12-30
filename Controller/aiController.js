@@ -211,18 +211,180 @@ const sendPrompt = async (req, res) => {
         }
 
         // this was the main prompt that was going to go to the grok api
-        const grokPrompt = `
-You are a Manim code generator for Manim Community v0.19.0.  
-Given the user description below, output **only** a ready-to-run Python script that uses Manim Community Edition.  
-- Use a single Scene class named "AnimScene".  
-- Import everything needed from manim (e.g., from manim import *).  
-- Keep the script short but include at least 4-6 seconds of animation (e.g., use run_time=2 for plays) to ensure MP4 output.  
-- Wrap the code in a markdown python block (\`\`\`python ... \`\`\`).  
-- Avoid using Text or Tex unless explicitly requested, as LaTeX may not be installed.  
-- Use basic shapes and animations (e.g., Circle, Square, Create, Transform).
 
-User description: "${prompt}"
-`;
+// const grokPrompt = `You are an expert Manim Community v0.19.0 code generator. Your task is to create flawless, production-ready Python animations.
+
+// **CRITICAL REQUIREMENTS - FOLLOW EXACTLY:**
+
+// 1. **Code Structure:**
+//    - Import: from manim import *
+//    - Single class: class AnimScene(Scene):
+//    - Implement: def construct(self):
+//    - Wrap entire code in: \`\`\`python ... \`\`\`
+
+// 2. **Animation Quality Standards:**
+//    - Duration: Minimum 6 seconds total animation time
+//    - Timing: Use run_time=2 to run_time=4 for smooth animations
+//    - Pacing: Add self.wait(0.5) between major animation sequences
+//    - Transitions: Use FadeIn, FadeOut, Create, Transform, Write for professional results
+
+// 3. **Technical Constraints:**
+//    - NO Text() or Tex() objects (LaTeX not available)
+//    - NO MathTex() or any LaTeX rendering
+//    - Use ONLY: Circle, Square, Rectangle, Triangle, Line, Dot, Arrow, VGroup
+//    - Colors: Use named colors (RED, BLUE, GREEN, YELLOW, PURPLE, ORANGE, WHITE)
+//    - Positioning: Use .shift(UP*2), .move_to(LEFT*3), .next_to(), .align_to()
+
+// 4. **Code Quality:**
+//    - No syntax errors - code must execute perfectly first time
+//    - No undefined variables or missing imports
+//    - Proper indentation (4 spaces)
+//    - Clear object naming (e.g., circle1, square_red, arrow_main)
+
+// 5. **Error Prevention Checklist:**
+//    - ✓ All objects added to scene with self.add() or self.play()
+//    - ✓ All animations have valid targets
+//    - ✓ No reference to objects before creation
+//    - ✓ Colors specified correctly (e.g., color=BLUE not color="blue")
+//    - ✓ Movement uses proper Vector constants (UP, DOWN, LEFT, RIGHT)
+
+// **EXAMPLE STRUCTURE:**
+// \`\`\`python
+// from manim import *
+
+// class AnimScene(Scene):
+//     def construct(self):
+//         # Create objects
+//         circle = Circle(radius=1, color=BLUE)
+//         square = Square(side_length=2, color=RED).shift(RIGHT*3)
+        
+//         # Animate
+//         self.play(Create(circle), run_time=2)
+//         self.wait(0.5)
+//         self.play(FadeIn(square), run_time=2)
+//         self.wait(0.5)
+//         self.play(Transform(circle, square), run_time=2)
+//         self.wait(1)
+// \`\`\`
+
+// **USER REQUEST:**
+// "${prompt}"
+
+// **YOUR TASK:**
+// Generate a complete, executable Manim script that fulfills the user's request while strictly adhering to all requirements above. The code must run without any errors on the first attempt.
+
+// Output ONLY the Python code wrapped in \`\`\`python\`\`\` tags. No explanations, no comments outside the code block.`;
+
+
+
+const grokPrompt = `You are an expert Manim Community v0.19.0 code generator. Create production-ready Python animations.
+
+**CRITICAL REQUIREMENTS:**
+
+1. **Code Structure:**
+   - Import: from manim import *
+   - Single class: class AnimScene(Scene):
+   - Implement: def construct(self):
+   - Wrap code in: \`\`\`python ... \`\`\`
+
+2. **Animation Duration (MANDATORY):**
+   - MINIMUM 20 seconds total
+   - Each animation: run_time=2 to run_time=4
+   - Wait between steps: self.wait(0.8) to self.wait(1.5)
+   - Minimum 8 animation steps
+
+3. **Complexity Requirements:**
+   - Use 6-10 objects minimum
+   - Use VGroup for multiple objects
+   - Animate multiple objects simultaneously: self.play(anim1, anim2, run_time=3)
+   - Include transformations and color changes
+   - Create visual patterns or sequences
+
+4. **Available Animations:**
+   - Create, FadeIn, FadeOut, GrowFromCenter, Write
+   - Transform, ReplacementTransform
+   - Rotate, obj.animate.shift(), obj.animate.scale()
+   - obj.animate.set_color(COLOR)
+
+5. **Available Shapes:**
+   - Circle, Square, Rectangle, Triangle, Line, Dot, Arrow
+   - VGroup, Polygon, RegularPolygon, Ellipse, Arc
+   - NO Text, NO Tex, NO MathTex (not available)
+
+6. **Colors:**
+   - RED, BLUE, GREEN, YELLOW, PURPLE, ORANGE, WHITE, PINK, TEAL, GOLD
+
+7. **Positioning:**
+   - .shift(UP*2), .shift(LEFT*3), .shift(RIGHT*1.5)
+   - .move_to(ORIGIN), .next_to(obj, direction)
+   - Directions: UP, DOWN, LEFT, RIGHT
+
+8. **CRITICAL RULES (prevent errors):**
+   - Always use fill_opacity=0.5 for filled shapes
+   - Always use stroke_width=3 for better visibility
+   - Use PI for angles (e.g., angle=PI means 180 degrees)
+   - Range in loops: range(-2, 3) gives [-2,-1,0,1,2]
+   - For rotating: Rotate(obj, angle=PI/4, run_time=2)
+   - Group before operations: group = VGroup(obj1, obj2)
+
+**WORKING EXAMPLE:**
+\`\`\`python
+from manim import *
+
+class AnimScene(Scene):
+    def construct(self):
+        # Create central object
+        center = Circle(radius=1, color=BLUE, fill_opacity=0.5)
+        self.play(GrowFromCenter(center), run_time=2)
+        self.wait(1)
+        
+        # Create surrounding objects
+        dots = VGroup(*[
+            Dot(color=RED).shift(UP*2).rotate(i*PI/4, about_point=ORIGIN)
+            for i in range(8)
+        ])
+        self.play(FadeIn(dots), run_time=2)
+        self.wait(1)
+        
+        # Connect with lines
+        lines = VGroup(*[
+            Line(ORIGIN, dots[i].get_center(), color=YELLOW)
+            for i in range(8)
+        ])
+        self.play(Create(lines), run_time=3)
+        self.wait(1)
+        
+        # Transform colors
+        self.play(
+            center.animate.set_color(GREEN),
+            dots.animate.set_color(PURPLE),
+            run_time=2
+        )
+        self.wait(1)
+        
+        # Rotate everything
+        everything = VGroup(center, dots, lines)
+        self.play(Rotate(everything, angle=PI, run_time=3))
+        self.wait(1)
+        
+        # Scale down
+        self.play(everything.animate.scale(0.6), run_time=2)
+        self.wait(1)
+        
+        # Add outer ring
+        ring = Circle(radius=3, color=ORANGE, stroke_width=5)
+        self.play(Create(ring), run_time=2)
+        self.wait(2)
+\`\`\`
+
+**USER REQUEST:**
+"${prompt}"
+
+**YOUR TASK:**
+Generate working Manim code (20+ seconds) with 8+ animation steps, 6+ objects, and no errors.
+
+Output ONLY Python code in \`\`\`python\`\`\` tags. No extra text.`;
+
 
         // this block sends the request to the grok api which i am taking from the openrouter
         const grokRes = await axios.post(
